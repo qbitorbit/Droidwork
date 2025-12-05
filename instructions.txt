@@ -39,3 +39,5 @@ source venv/bin/activate
 env -u http_proxy python -c "from deepagents.android_tools import install_apk; print(install_apk)"
 
 env -u http_proxy python -c "from deepagents.android_tools import install_apk; print('install_apk imported OK')"
+
+env -u http_proxy python -c "from deepagents.android_tools import uninstall_app; print('uninstall_app imported OK')"
