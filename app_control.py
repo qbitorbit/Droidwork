@@ -184,6 +184,47 @@ def install_apk(apk_path: str, device_serial: Optional[str] = None) -> str:
         })
 
 
+@tool
+def uninstall_app(package_name: str, device_serial: Optional[str] = None) -> str:
+    """Uninstall an app from an Android device.
+    
+    Args:
+        package_name: Package name to uninstall (e.g., 'com.example.app')
+        device_serial: Device serial number (optional, uses first device if not specified)
+    
+    Returns:
+        JSON string with uninstallation result
+    """
+    controller = AppController(device_serial)
+    adb = controller.adb
+    
+    # Check if package exists first
+    success, stdout, stderr = adb._run_adb(["shell", "pm", "list", "packages", package_name])
+    
+    if not stdout or package_name not in stdout:
+        return json.dumps({
+            "success": False,
+            "error": f"Package not found: {package_name}"
+        })
+    
+    # Uninstall the package
+    success, stdout, stderr = adb._run_adb(["uninstall", package_name], timeout=60)
+    
+    if success and "Success" in stdout:
+        return json.dumps({
+            "success": True,
+            "message": f"Successfully uninstalled {package_name}",
+            "device": adb.device_serial or "default"
+        })
+    else:
+        error_msg = stderr or stdout or "Unknown uninstallation error"
+        return json.dumps({
+            "success": False,
+            "error": error_msg,
+            "device": adb.device_serial or "default"
+        })
+
+
 # Export all tools
 __all__ = [
     'AppController',
