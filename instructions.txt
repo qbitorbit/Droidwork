@@ -33,3 +33,7 @@ cd ~/deepagents/libs/deepagents/deepagents/android_tools
 touch app_control.py
 
 touch test_app_control.py
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python -c "from deepagents.android_tools import install_apk; print(install_apk)"
