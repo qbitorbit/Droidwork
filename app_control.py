@@ -148,8 +148,6 @@ def install_apk(apk_path: str, device_serial: Optional[str] = None) -> str:
     Returns:
         JSON string with installation result
     """
-    import os
-    
     # Validate APK exists
     if not os.path.exists(apk_path):
         return json.dumps({
@@ -163,24 +161,28 @@ def install_apk(apk_path: str, device_serial: Optional[str] = None) -> str:
             "error": "File must be an APK (.apk extension)"
         })
     
-    controller = AppController(device_serial)
-    adb = controller.adb
+    if not device_serial:
+        devices = _app_controller.adb.get_devices()
+        if not devices:
+            return json.dumps({"success": False, "error": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     # Install APK using adb install command
+    adb = ADBClient(device_serial)
     success, stdout, stderr = adb._run_adb(["install", "-r", apk_path], timeout=120)
     
     if success and "Success" in stdout:
         return json.dumps({
             "success": True,
             "message": f"Successfully installed {os.path.basename(apk_path)}",
-            "device": adb.device_serial or "default"
+            "device": device_serial
         })
     else:
         error_msg = stderr or stdout or "Unknown installation error"
         return json.dumps({
             "success": False,
             "error": error_msg,
-            "device": adb.device_serial or "default"
+            "device": device_serial
         })
 
 
@@ -195,34 +197,39 @@ def uninstall_app(package_name: str, device_serial: Optional[str] = None) -> str
     Returns:
         JSON string with uninstallation result
     """
-    controller = AppController(device_serial)
-    adb = controller.adb
+    if not device_serial:
+        devices = _app_controller.adb.get_devices()
+        if not devices:
+            return json.dumps({"success": False, "error": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     # Check if package exists first
-    success, stdout, stderr = adb._run_adb(["shell", "pm", "list", "packages", package_name])
+    output = _app_controller.adb.shell(f"pm list packages {package_name}", device_serial)
     
-    if not stdout or package_name not in stdout:
+    if not output or package_name not in output:
         return json.dumps({
             "success": False,
             "error": f"Package not found: {package_name}"
         })
     
     # Uninstall the package
+    adb = ADBClient(device_serial)
     success, stdout, stderr = adb._run_adb(["uninstall", package_name], timeout=60)
     
     if success and "Success" in stdout:
         return json.dumps({
             "success": True,
             "message": f"Successfully uninstalled {package_name}",
-            "device": adb.device_serial or "default"
+            "device": device_serial
         })
     else:
         error_msg = stderr or stdout or "Unknown uninstallation error"
         return json.dumps({
             "success": False,
             "error": error_msg,
-            "device": adb.device_serial or "default"
+            "device": device_serial
         })
+
 
 @tool
 def start_app(package_name: str, device_serial: Optional[str] = None) -> str:
@@ -235,37 +242,40 @@ def start_app(package_name: str, device_serial: Optional[str] = None) -> str:
     Returns:
         JSON string with launch result
     """
-    controller = AppController(device_serial)
-    adb = controller.adb
+    if not device_serial:
+        devices = _app_controller.adb.get_devices()
+        if not devices:
+            return json.dumps({"success": False, "error": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     # Use monkey tool to launch app (works without knowing activity name)
-    success, stdout, stderr = adb._run_adb([
-        "shell", "monkey", "-p", package_name, 
-        "-c", "android.intent.category.LAUNCHER", "1"
-    ], timeout=30)
+    output = _app_controller.adb.shell(
+        f"monkey -p {package_name} -c android.intent.category.LAUNCHER 1",
+        device_serial
+    )
     
-    if success and "Events injected: 1" in stdout:
+    if output and "Events injected: 1" in output:
         return json.dumps({
             "success": True,
             "message": f"Successfully launched {package_name}",
-            "device": adb.device_serial or "default"
+            "device": device_serial
         })
     else:
         # Check if package exists
-        check_success, check_stdout, _ = adb._run_adb(["shell", "pm", "list", "packages", package_name])
+        check_output = _app_controller.adb.shell(f"pm list packages {package_name}", device_serial)
         
-        if not check_stdout or package_name not in check_stdout:
+        if not check_output or package_name not in check_output:
             return json.dumps({
                 "success": False,
                 "error": f"Package not found: {package_name}"
             })
         
-        error_msg = stderr or stdout or "Failed to launch app"
         return json.dumps({
             "success": False,
-            "error": error_msg,
-            "device": adb.device_serial or "default"
+            "error": output or "Failed to launch app",
+            "device": device_serial
         })
+
 
 @tool
 def stop_app(package_name: str, device_serial: Optional[str] = None) -> str:
@@ -278,34 +288,30 @@ def stop_app(package_name: str, device_serial: Optional[str] = None) -> str:
     Returns:
         JSON string with stop result
     """
-    controller = AppController(device_serial)
-    adb = controller.adb
+    if not device_serial:
+        devices = _app_controller.adb.get_devices()
+        if not devices:
+            return json.dumps({"success": False, "error": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     # Check if package exists first
-    success, stdout, stderr = adb._run_adb(["shell", "pm", "list", "packages", package_name])
+    output = _app_controller.adb.shell(f"pm list packages {package_name}", device_serial)
     
-    if not stdout or package_name not in stdout:
+    if not output or package_name not in output:
         return json.dumps({
             "success": False,
             "error": f"Package not found: {package_name}"
         })
     
     # Force stop the app
-    success, stdout, stderr = adb._run_adb(["shell", "am", "force-stop", package_name], timeout=30)
+    _app_controller.adb.shell(f"am force-stop {package_name}", device_serial)
     
-    if success:
-        return json.dumps({
-            "success": True,
-            "message": f"Successfully stopped {package_name}",
-            "device": adb.device_serial or "default"
-        })
-    else:
-        error_msg = stderr or stdout or "Failed to stop app"
-        return json.dumps({
-            "success": False,
-            "error": error_msg,
-            "device": adb.device_serial or "default"
-        })
+    return json.dumps({
+        "success": True,
+        "message": f"Successfully stopped {package_name}",
+        "device": device_serial
+    })
+
 
 @tool
 def clear_app_data(package_name: str, device_serial: Optional[str] = None) -> str:
@@ -318,33 +324,35 @@ def clear_app_data(package_name: str, device_serial: Optional[str] = None) -> st
     Returns:
         JSON string with clear result
     """
-    controller = AppController(device_serial)
-    adb = controller.adb
+    if not device_serial:
+        devices = _app_controller.adb.get_devices()
+        if not devices:
+            return json.dumps({"success": False, "error": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     # Check if package exists first
-    success, stdout, stderr = adb._run_adb(["shell", "pm", "list", "packages", package_name])
+    output = _app_controller.adb.shell(f"pm list packages {package_name}", device_serial)
     
-    if not stdout or package_name not in stdout:
+    if not output or package_name not in output:
         return json.dumps({
             "success": False,
             "error": f"Package not found: {package_name}"
         })
     
     # Clear app data
-    success, stdout, stderr = adb._run_adb(["shell", "pm", "clear", package_name], timeout=30)
+    output = _app_controller.adb.shell(f"pm clear {package_name}", device_serial)
     
-    if success and "Success" in stdout:
+    if output and "Success" in output:
         return json.dumps({
             "success": True,
             "message": f"Successfully cleared data for {package_name}",
-            "device": adb.device_serial or "default"
+            "device": device_serial
         })
     else:
-        error_msg = stderr or stdout or "Failed to clear app data"
         return json.dumps({
             "success": False,
-            "error": error_msg,
-            "device": adb.device_serial or "default"
+            "error": output or "Failed to clear app data",
+            "device": device_serial
         })
 
 
