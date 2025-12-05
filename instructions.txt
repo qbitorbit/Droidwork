@@ -10,3 +10,9 @@ touch libs/deepagents/deepagents/android_tools/__init__.py
 touch libs/deepagents/deepagents/android_tools/adb_client.py
 
 Open libs/deepagents/deepagents/android_tools/adb_client.py in VS Code and paste this:
+
+Step 3: Create a test script to verify it works:
+
+touch test_android_base.py
+
+Paste this in test_android_base.py (in your deepagents root):
