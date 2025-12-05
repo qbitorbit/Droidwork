@@ -20,3 +20,6 @@ Paste this in test_android_base.py (in your deepagents root):
 
 Step 4: Run the test:
 env -u http_proxy python test_android_base.py
+
+Create a new test file:
+touch test_device_manager.py
