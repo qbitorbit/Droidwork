@@ -1,0 +1,12 @@
+Step 1: Create the directory structure in your deepagents project:
+
+cd ~/deepagents
+mkdir -p libs/deepagents/deepagents/android_tools
+
+Step 2: Create the base ADB client wrapper.
+First file - adb_client.py (Base ADB wrapper):
+
+touch libs/deepagents/deepagents/android_tools/__init__.py
+touch libs/deepagents/deepagents/android_tools/adb_client.py
+
+Open libs/deepagents/deepagents/android_tools/adb_client.py in VS Code and paste this:
