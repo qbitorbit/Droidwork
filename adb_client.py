@@ -1,5 +1,4 @@
 """ADB client wrapper for Android device control."""
-
 import subprocess
 from typing import List, Optional, Dict, Tuple
 
@@ -76,15 +75,39 @@ class ADBClient:
         
         return devices
     
-    def shell(self, command: str, timeout: int = 30) -> Tuple[bool, str, str]:
+    def shell(self, command: str, device_serial: Optional[str] = None, timeout: int = 30) -> str:
         """
         Execute shell command on device.
         
         Args:
             command: Shell command to execute
+            device_serial: Target device serial (overrides instance serial)
             timeout: Command timeout
             
         Returns:
-            Tuple of (success, stdout, stderr)
+            Command output as string (empty string on failure)
         """
-        return self._run_adb(["shell", command], timeout=timeout)
+        # Build command with device serial
+        cmd = ["adb"]
+        
+        # Use provided serial, or instance serial, or let adb auto-select
+        serial = device_serial or self.device_serial
+        if serial:
+            cmd.extend(["-s", serial])
+        
+        cmd.extend(["shell", command])
+        
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=timeout
+            )
+            
+            return result.stdout.strip() if result.returncode == 0 else ""
+            
+        except subprocess.TimeoutExpired:
+            return ""
+        except Exception as e:
+            return ""
