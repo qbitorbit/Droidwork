@@ -29,3 +29,5 @@ touch debug_getprop.py
 open debug_getprop.py
 
 touch app_control.py
+
+touch test_app_control.py
