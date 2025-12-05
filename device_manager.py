@@ -15,7 +15,7 @@ class DeviceManager:
     def __init__(self):
         self.adb = ADBClient()
     
-    def _get_device_properties(self, device_serial: str) -> Dict[str, Any]:
+def _get_device_properties(self, device_serial: str) -> Dict[str, Any]:
         """Get comprehensive device properties."""
         props = {}
         
@@ -33,16 +33,23 @@ class DeviceManager:
         
         for key, prop in prop_commands.items():
             result = self.adb.shell(f"getprop {prop}", device_serial)
+            # Handle tuple return (output, error)
+            if isinstance(result, tuple):
+                result = result[0]  # Get just the output
             props[key] = result.strip() if result else "Unknown"
         
         return props
     
-    def _get_device_status(self, device_serial: str) -> Dict[str, Any]:
+def _get_device_status(self, device_serial: str) -> Dict[str, Any]:
         """Get device status information."""
         status = {}
         
         # Battery info
         battery = self.adb.shell("dumpsys battery", device_serial)
+        # Handle tuple return
+        if isinstance(battery, tuple):
+            battery = battery[0]
+            
         if battery:
             for line in battery.split('\n'):
                 if 'level:' in line:
@@ -52,14 +59,17 @@ class DeviceManager:
         
         # Screen status
         screen = self.adb.shell("dumpsys power | grep 'Display Power'", device_serial)
-        status['screen_on'] = 'ON' if 'state=ON' in screen else 'OFF'
+        if isinstance(screen, tuple):
+            screen = screen[0]
+        status['screen_on'] = 'ON' if screen and 'state=ON' in screen else 'OFF'
         
         # WiFi status
         wifi = self.adb.shell("dumpsys wifi | grep 'Wi-Fi is'", device_serial)
-        status['wifi_enabled'] = 'enabled' in wifi.lower()
+        if isinstance(wifi, tuple):
+            wifi = wifi[0]
+        status['wifi_enabled'] = wifi and 'enabled' in wifi.lower()
         
         return status
-
 
 # Initialize global device manager
 _device_manager = DeviceManager()
@@ -169,6 +179,10 @@ def get_device_battery_info(device_serial: Optional[str] = None) -> str:
     
     battery_output = _device_manager.adb.shell("dumpsys battery", device_serial)
     
+    # Handle tuple return
+    if isinstance(battery_output, tuple):
+        battery_output = battery_output[0]
+    
     if not battery_output:
         return json.dumps({
             "status": "error",
@@ -266,20 +280,28 @@ def get_device_screen_info(device_serial: Optional[str] = None) -> str:
     
     # Get screen size
     size = _device_manager.adb.shell("wm size", device_serial)
+    if isinstance(size, tuple):
+        size = size[0]
     if size and 'Physical size:' in size:
         screen_info['resolution'] = size.split('Physical size:')[1].strip()
     
     # Get screen density
     density = _device_manager.adb.shell("wm density", device_serial)
+    if isinstance(density, tuple):
+        density = density[0]
     if density and 'Physical density:' in density:
         screen_info['density'] = density.split('Physical density:')[1].strip()
     
     # Get screen state
     power = _device_manager.adb.shell("dumpsys power | grep 'Display Power'", device_serial)
-    screen_info['screen_on'] = 'ON' if 'state=ON' in power else 'OFF'
+    if isinstance(power, tuple):
+        power = power[0]
+    screen_info['screen_on'] = 'ON' if power and 'state=ON' in power else 'OFF'
     
     # Get orientation
     orientation = _device_manager.adb.shell("dumpsys input | grep 'SurfaceOrientation'", device_serial)
+    if isinstance(orientation, tuple):
+        orientation = orientation[0]
     if orientation:
         screen_info['orientation'] = orientation.strip()
     
