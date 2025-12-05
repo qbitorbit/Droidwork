@@ -23,3 +23,7 @@ env -u http_proxy python test_android_base.py
 
 Create a new test file:
 touch test_device_manager.py
+
+cd ~/deepagents
+touch debug_getprop.py
+open debug_getprop.py
