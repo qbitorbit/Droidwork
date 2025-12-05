@@ -15,7 +15,7 @@ class DeviceManager:
     def __init__(self):
         self.adb = ADBClient()
     
-def _get_device_properties(self, device_serial: str) -> Dict[str, Any]:
+    def _get_device_properties(self, device_serial: str) -> Dict[str, Any]:
         """Get comprehensive device properties."""
         props = {}
         
@@ -40,7 +40,7 @@ def _get_device_properties(self, device_serial: str) -> Dict[str, Any]:
         
         return props
     
-def _get_device_status(self, device_serial: str) -> Dict[str, Any]:
+    def _get_device_status(self, device_serial: str) -> Dict[str, Any]:
         """Get device status information."""
         status = {}
         
@@ -70,6 +70,7 @@ def _get_device_status(self, device_serial: str) -> Dict[str, Any]:
         status['wifi_enabled'] = wifi and 'enabled' in wifi.lower()
         
         return status
+
 
 # Initialize global device manager
 _device_manager = DeviceManager()
