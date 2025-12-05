@@ -41,3 +41,5 @@ env -u http_proxy python -c "from deepagents.android_tools import install_apk; p
 env -u http_proxy python -c "from deepagents.android_tools import install_apk; print('install_apk imported OK')"
 
 env -u http_proxy python -c "from deepagents.android_tools import uninstall_app; print('uninstall_app imported OK')"
+
+env -u http_proxy python -c "from deepagents.android_tools import start_app; print('start_app imported OK')"
