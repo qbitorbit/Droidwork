@@ -307,6 +307,46 @@ def stop_app(package_name: str, device_serial: Optional[str] = None) -> str:
             "device": adb.device_serial or "default"
         })
 
+@tool
+def clear_app_data(package_name: str, device_serial: Optional[str] = None) -> str:
+    """Clear app data and cache on an Android device.
+    
+    Args:
+        package_name: Package name to clear data for (e.g., 'com.android.chrome')
+        device_serial: Device serial number (optional, uses first device if not specified)
+    
+    Returns:
+        JSON string with clear result
+    """
+    controller = AppController(device_serial)
+    adb = controller.adb
+    
+    # Check if package exists first
+    success, stdout, stderr = adb._run_adb(["shell", "pm", "list", "packages", package_name])
+    
+    if not stdout or package_name not in stdout:
+        return json.dumps({
+            "success": False,
+            "error": f"Package not found: {package_name}"
+        })
+    
+    # Clear app data
+    success, stdout, stderr = adb._run_adb(["shell", "pm", "clear", package_name], timeout=30)
+    
+    if success and "Success" in stdout:
+        return json.dumps({
+            "success": True,
+            "message": f"Successfully cleared data for {package_name}",
+            "device": adb.device_serial or "default"
+        })
+    else:
+        error_msg = stderr or stdout or "Failed to clear app data"
+        return json.dumps({
+            "success": False,
+            "error": error_msg,
+            "device": adb.device_serial or "default"
+        })
+
 
 # Export all tools
 __all__ = [
