@@ -224,6 +224,49 @@ def uninstall_app(package_name: str, device_serial: Optional[str] = None) -> str
             "device": adb.device_serial or "default"
         })
 
+@tool
+def start_app(package_name: str, device_serial: Optional[str] = None) -> str:
+    """Launch an app on an Android device.
+    
+    Args:
+        package_name: Package name to launch (e.g., 'com.android.settings')
+        device_serial: Device serial number (optional, uses first device if not specified)
+    
+    Returns:
+        JSON string with launch result
+    """
+    controller = AppController(device_serial)
+    adb = controller.adb
+    
+    # Use monkey tool to launch app (works without knowing activity name)
+    success, stdout, stderr = adb._run_adb([
+        "shell", "monkey", "-p", package_name, 
+        "-c", "android.intent.category.LAUNCHER", "1"
+    ], timeout=30)
+    
+    if success and "Events injected: 1" in stdout:
+        return json.dumps({
+            "success": True,
+            "message": f"Successfully launched {package_name}",
+            "device": adb.device_serial or "default"
+        })
+    else:
+        # Check if package exists
+        check_success, check_stdout, _ = adb._run_adb(["shell", "pm", "list", "packages", package_name])
+        
+        if not check_stdout or package_name not in check_stdout:
+            return json.dumps({
+                "success": False,
+                "error": f"Package not found: {package_name}"
+            })
+        
+        error_msg = stderr or stdout or "Failed to launch app"
+        return json.dumps({
+            "success": False,
+            "error": error_msg,
+            "device": adb.device_serial or "default"
+        })
+
 
 # Export all tools
 __all__ = [
