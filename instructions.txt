@@ -27,3 +27,5 @@ touch test_device_manager.py
 cd ~/deepagents
 touch debug_getprop.py
 open debug_getprop.py
+
+touch app_control.py
