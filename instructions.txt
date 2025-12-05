@@ -28,6 +28,8 @@ cd ~/deepagents
 touch debug_getprop.py
 open debug_getprop.py
 
+cd ~/deepagents/libs/deepagents/deepagents/android_tools
+
 touch app_control.py
 
 touch test_app_control.py
