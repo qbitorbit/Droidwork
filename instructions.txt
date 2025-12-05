@@ -45,3 +45,5 @@ env -u http_proxy python -c "from deepagents.android_tools import uninstall_app;
 env -u http_proxy python -c "from deepagents.android_tools import start_app; print('start_app imported OK')"
 
 env -u http_proxy python -c "from deepagents.android_tools import stop_app; print('stop_app imported OK')"
+
+env -u http_proxy python -c "from deepagents.android_tools import clear_app_data; print('clear_app_data imported OK')"
