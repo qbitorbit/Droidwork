@@ -97,7 +97,9 @@ def list_android_devices() -> str:
         })
     
     device_list = []
-    for serial in devices:
+    for device in devices:
+        # devices is a list of dicts like [{'serial': 'ABC123', 'status': 'device'}]
+        serial = device.get('serial') if isinstance(device, dict) else device
         props = _device_manager._get_device_properties(serial)
         device_list.append({
             "serial": serial,
@@ -135,15 +137,18 @@ def get_device_info(device_serial: Optional[str] = None) -> str:
                 "status": "error",
                 "message": "No devices connected"
             })
-        device_serial = devices[0]
+        # Handle dict format from get_devices()
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     # Verify device exists
     devices = _device_manager.adb.get_devices()
-    if device_serial not in devices:
+    device_serials = [d.get('serial') if isinstance(d, dict) else d for d in devices]
+    
+    if device_serial not in device_serials:
         return json.dumps({
             "status": "error",
             "message": f"Device {device_serial} not found",
-            "available_devices": devices
+            "available_devices": device_serials
         })
     
     # Get device properties and status
@@ -176,7 +181,8 @@ def get_device_battery_info(device_serial: Optional[str] = None) -> str:
         devices = _device_manager.adb.get_devices()
         if not devices:
             return json.dumps({"status": "error", "message": "No devices connected"})
-        device_serial = devices[0]
+        # Handle dict format from get_devices()
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     battery_output = _device_manager.adb.shell("dumpsys battery", device_serial)
     
@@ -223,7 +229,8 @@ def reboot_device(device_serial: Optional[str] = None, mode: str = "normal") -> 
         devices = _device_manager.adb.get_devices()
         if not devices:
             return json.dumps({"status": "error", "message": "No devices connected"})
-        device_serial = devices[0]
+        # Handle dict format from get_devices()
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     valid_modes = ["normal", "recovery", "bootloader"]
     if mode not in valid_modes:
@@ -275,7 +282,8 @@ def get_device_screen_info(device_serial: Optional[str] = None) -> str:
         devices = _device_manager.adb.get_devices()
         if not devices:
             return json.dumps({"status": "error", "message": "No devices connected"})
-        device_serial = devices[0]
+        # Handle dict format from get_devices()
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
     
     screen_info = {}
     
