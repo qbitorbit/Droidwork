@@ -1,0 +1,145 @@
+"""
+App Control - Android Application Management Tools
+Provides LangChain tools for installing, uninstalling, and managing Android apps.
+"""
+
+from typing import Optional, List, Dict, Any
+from langchain_core.tools import tool
+from .adb_client import ADBClient
+import json
+import os
+
+
+class AppController:
+    """Manager for Android application operations via ADB."""
+    
+    def __init__(self):
+        self.adb = ADBClient()
+
+
+# Initialize global app controller
+_app_controller = AppController()
+
+
+@tool
+def list_installed_packages(device_serial: Optional[str] = None, filter_type: str = "all") -> str:
+    """
+    List installed packages on an Android device.
+    
+    Returns a list of installed applications filtered by type.
+    
+    Args:
+        device_serial: Serial number of the device. If None, uses first available device.
+        filter_type: Filter type - "all", "system", "3rdparty", "enabled", "disabled"
+    
+    Returns:
+        str: JSON string with list of installed packages
+    """
+    if not device_serial:
+        devices = _app_controller.adb.get_devices()
+        if not devices:
+            return json.dumps({"status": "error", "message": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
+    
+    # Build pm list command based on filter
+    filter_map = {
+        "all": "",
+        "system": "-s",
+        "3rdparty": "-3",
+        "enabled": "-e",
+        "disabled": "-d"
+    }
+    
+    if filter_type not in filter_map:
+        return json.dumps({
+            "status": "error",
+            "message": f"Invalid filter_type '{filter_type}'. Valid: {list(filter_map.keys())}"
+        })
+    
+    filter_flag = filter_map[filter_type]
+    cmd = f"pm list packages {filter_flag}".strip()
+    
+    output = _app_controller.adb.shell(cmd, device_serial)
+    
+    if not output:
+        return json.dumps({
+            "status": "error",
+            "message": "Failed to list packages"
+        })
+    
+    # Parse package names (format: "package:com.example.app")
+    packages = []
+    for line in output.split('\n'):
+        if line.startswith('package:'):
+            package_name = line.replace('package:', '').strip()
+            if package_name:
+                packages.append(package_name)
+    
+    return json.dumps({
+        "status": "success",
+        "serial": device_serial,
+        "filter": filter_type,
+        "count": len(packages),
+        "packages": packages
+    }, indent=2)
+
+
+@tool
+def get_app_info(package_name: str, device_serial: Optional[str] = None) -> str:
+    """
+    Get detailed information about an installed application.
+    
+    Returns package details including version, install location, permissions, etc.
+    
+    Args:
+        package_name: Package name (e.g., "com.android.chrome")
+        device_serial: Serial number of the device. If None, uses first available device.
+    
+    Returns:
+        str: JSON string with application information
+    """
+    if not device_serial:
+        devices = _app_controller.adb.get_devices()
+        if not devices:
+            return json.dumps({"status": "error", "message": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
+    
+    # Get package info using dumpsys
+    output = _app_controller.adb.shell(f"dumpsys package {package_name}", device_serial)
+    
+    if not output or "Unable to find package" in output:
+        return json.dumps({
+            "status": "error",
+            "message": f"Package '{package_name}' not found on device"
+        })
+    
+    # Parse key information
+    app_info = {"package_name": package_name}
+    
+    for line in output.split('\n'):
+        line = line.strip()
+        
+        if 'versionName=' in line:
+            app_info['version_name'] = line.split('versionName=')[1].split()[0]
+        elif 'versionCode=' in line:
+            app_info['version_code'] = line.split('versionCode=')[1].split()[0]
+        elif 'firstInstallTime=' in line:
+            app_info['first_install_time'] = line.split('firstInstallTime=')[1].strip()
+        elif 'lastUpdateTime=' in line:
+            app_info['last_update_time'] = line.split('lastUpdateTime=')[1].strip()
+        elif 'installerPackageName=' in line:
+            app_info['installer'] = line.split('installerPackageName=')[1].strip()
+    
+    return json.dumps({
+        "status": "success",
+        "serial": device_serial,
+        "app_info": app_info
+    }, indent=2)
+
+
+# Export all tools
+__all__ = [
+    'AppController',
+    'list_installed_packages',
+    'get_app_info',
+]
