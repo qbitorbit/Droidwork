@@ -49,3 +49,5 @@ env -u http_proxy python -c "from deepagents.android_tools import stop_app; prin
 env -u http_proxy python -c "from deepagents.android_tools import clear_app_data; print('clear_app_data imported OK')"
 
 touch test_app_control_full.py
+
+env -u http_proxy python test_app_control_full.py
