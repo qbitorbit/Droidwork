@@ -137,6 +137,53 @@ def get_app_info(package_name: str, device_serial: Optional[str] = None) -> str:
     }, indent=2)
 
 
+@tool
+def install_apk(apk_path: str, device_serial: Optional[str] = None) -> str:
+    """Install an APK file on an Android device.
+    
+    Args:
+        apk_path: Path to the APK file on local machine
+        device_serial: Device serial number (optional, uses first device if not specified)
+    
+    Returns:
+        JSON string with installation result
+    """
+    import os
+    
+    # Validate APK exists
+    if not os.path.exists(apk_path):
+        return json.dumps({
+            "success": False,
+            "error": f"APK file not found: {apk_path}"
+        })
+    
+    if not apk_path.endswith('.apk'):
+        return json.dumps({
+            "success": False,
+            "error": "File must be an APK (.apk extension)"
+        })
+    
+    controller = AppController(device_serial)
+    adb = controller.adb
+    
+    # Install APK using adb install command
+    success, stdout, stderr = adb._run_adb(["install", "-r", apk_path], timeout=120)
+    
+    if success and "Success" in stdout:
+        return json.dumps({
+            "success": True,
+            "message": f"Successfully installed {os.path.basename(apk_path)}",
+            "device": adb.device_serial or "default"
+        })
+    else:
+        error_msg = stderr or stdout or "Unknown installation error"
+        return json.dumps({
+            "success": False,
+            "error": error_msg,
+            "device": adb.device_serial or "default"
+        })
+
+
 # Export all tools
 __all__ = [
     'AppController',
