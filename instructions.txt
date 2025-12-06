@@ -71,3 +71,11 @@ You: What's the battery level on my first device?
 You: Show me third-party apps on RSCR70FW19K
 You: List files in /sdcard/Download
 
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python -c "
+from deepagents.android_tools.diagnostics import take_screenshot
+result = take_screenshot.invoke({})
+print(result)
+"
