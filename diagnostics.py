@@ -70,8 +70,12 @@ def take_screenshot(output_path: Optional[str] = None, device_serial: Optional[s
             "path": output_path,
             "device": device_serial
         })
+        
+    except Exception as e:
+        return json.dumps({"success": False, "error": str(e)})
 
-    @tool
+
+@tool
 def get_logcat(
     lines: int = 100,
     filter_tag: Optional[str] = None,
@@ -128,6 +132,63 @@ def get_logcat(
         
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
+
+
+@tool
+def capture_bugreport(output_path: Optional[str] = None, device_serial: Optional[str] = None) -> str:
+    """Capture a full bug report from the Android device.
+    
+    Note: This can take 1-3 minutes to complete.
+    
+    Args:
+        output_path: Where to save on Mac (default: ~/Downloads/bugreport_<timestamp>.zip)
+        device_serial: Device serial (optional, uses first device if not specified)
+    
+    Returns:
+        JSON string with success status and file path
+    """
+    import time
+    
+    # Get device serial
+    if not device_serial:
+        devices = _manager.adb.get_devices()
+        if not devices:
+            return json.dumps({"success": False, "error": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
+    
+    # Set default output path
+    if not output_path:
+        timestamp = int(time.time())
+        output_path = os.path.expanduser(f"~/Downloads/bugreport_{timestamp}.zip")
+    else:
+        output_path = os.path.expanduser(output_path)
+    
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    try:
+        adb = ADBClient(device_serial)
+        
+        # Capture bugreport (timeout 180 seconds = 3 minutes)
+        success, stdout, stderr = adb._run_adb(
+            ["bugreport", output_path], 
+            timeout=180
+        )
+        
+        if not success:
+            return json.dumps({"success": False, "error": f"Failed to capture bugreport: {stderr}"})
+        
+        # Check if file was created
+        if os.path.exists(output_path):
+            file_size = os.path.getsize(output_path)
+            return json.dumps({
+                "success": True,
+                "path": output_path,
+                "size_bytes": file_size,
+                "device": device_serial
+            })
+        else:
+            return json.dumps({"success": False, "error": "Bugreport file not created"})
         
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
