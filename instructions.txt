@@ -150,3 +150,8 @@ from deepagents.android_tools.ui_automation import drag
 result = drag.invoke({'start_x': 500, 'start_y': 500, 'end_x': 500, 'end_y': 800})
 print(result)
 "
+
+env -u http_proxy python -c "
+from deepagents.android_tools import tap, swipe, input_text, press_key, get_ui_hierarchy
+print('OK - 33 tools total')
+"
