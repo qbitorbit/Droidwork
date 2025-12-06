@@ -81,3 +81,9 @@ from deepagents.android_tools.diagnostics import take_screenshot
 result = take_screenshot.invoke({})
 print(result)
 "
+
+env -u http_proxy python -c "
+from deepagents.android_tools.diagnostics import get_logcat
+result = get_logcat.invoke({'lines': 10})
+print(result)
+"
