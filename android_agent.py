@@ -41,6 +41,18 @@ from deepagents.android_tools import (
     file_stats,
     list_app_databases,
     pull_app_database,
+    # Diagnostics (3 tools)
+    take_screenshot,
+    get_logcat,
+    capture_bugreport,
+    # UI Automation (7 tools)
+    tap,
+    long_press,
+    swipe,
+    drag,
+    input_text,
+    press_key,
+    get_ui_hierarchy,
 )
 
 # vLLM Server Configuration
@@ -62,15 +74,15 @@ def create_model():
     )
 
 
-# Collect all Android tools
+# Collect all Android tools (33 total)
 ANDROID_TOOLS = [
-    # Device Manager
+    # Device Manager (5)
     list_android_devices,
     get_device_info,
     get_device_battery_info,
     get_device_screen_info,
     reboot_device,
-    # App Control
+    # App Control (7)
     list_installed_packages,
     get_app_info,
     install_apk,
@@ -78,7 +90,7 @@ ANDROID_TOOLS = [
     start_app,
     stop_app,
     clear_app_data,
-    # File Operations
+    # File Operations (11)
     list_files,
     pull_file,
     push_file,
@@ -90,21 +102,33 @@ ANDROID_TOOLS = [
     file_stats,
     list_app_databases,
     pull_app_database,
+    # Diagnostics (3)
+    take_screenshot,
+    get_logcat,
+    capture_bugreport,
+    # UI Automation (7)
+    tap,
+    long_press,
+    swipe,
+    drag,
+    input_text,
+    press_key,
+    get_ui_hierarchy,
 ]
 
 # System prompt for Android control
 ANDROID_SYSTEM_PROMPT = """You are an Android device control assistant with access to connected Android devices via ADB.
 
-## Your Capabilities
+## Your Capabilities (33 Tools)
 
-### Device Management
+### Device Management (5 tools)
 - List connected devices and their status
 - Get device information (manufacturer, model, Android version)
 - Check battery status (level, charging state, health)
 - Get screen information (resolution, density, state)
 - Reboot devices (normal, recovery, bootloader)
 
-### App Control
+### App Control (7 tools)
 - List installed packages (all, system, third-party, enabled, disabled)
 - Get app details (version, install date, permissions)
 - Install APK files
@@ -113,7 +137,7 @@ ANDROID_SYSTEM_PROMPT = """You are an Android device control assistant with acce
 - Force stop apps
 - Clear app data and cache
 
-### File Operations
+### File Operations (11 tools)
 - List files and directories on device
 - Pull files from device to Mac (downloads to ~/Downloads)
 - Push files from Mac to device
@@ -124,6 +148,20 @@ ANDROID_SYSTEM_PROMPT = """You are an Android device control assistant with acce
 - Write text to files
 - Get file statistics
 - List and extract app databases
+
+### Diagnostics (3 tools)
+- Take screenshots (saves to ~/Downloads)
+- Get system logs (logcat) with filtering
+- Capture full bug reports
+
+### UI Automation (7 tools)
+- Tap on screen coordinates
+- Long press on screen coordinates
+- Swipe gestures (with configurable duration)
+- Drag and drop
+- Input/type text
+- Press hardware/system keys (Home, Back, Volume, etc.)
+- Dump UI hierarchy (XML) for element inspection
 
 ## Important Notes
 
@@ -139,7 +177,12 @@ ANDROID_SYSTEM_PROMPT = """You are an Android device control assistant with acce
 
 4. **App Packages**: Use full package names like `com.android.chrome` or `com.whatsapp`
 
-5. **Permissions**: Some operations may require the device to be rooted or the app to be debuggable (e.g., accessing app databases)
+5. **UI Automation Tips**:
+   - Use `get_ui_hierarchy` to find element bounds for tapping
+   - Use `take_screenshot` to see current screen state
+   - Common keycodes: KEYCODE_HOME (3), KEYCODE_BACK (4), KEYCODE_ENTER (66)
+
+6. **Permissions**: Some operations may require the device to be rooted or the app to be debuggable (e.g., accessing app databases)
 
 ## Response Format
 
@@ -149,9 +192,7 @@ All tools return JSON strings. Parse them to check:
 - `error`: Error message if operation failed
 - `device`: Serial of device used
 
-When listing devices or packages, format the results clearly for the user.
-When performing file operations, confirm what was done.
-Always let the user know which device you're operating on.
+When performing actions, confirm what was done and which device was used.
 """
 
 
