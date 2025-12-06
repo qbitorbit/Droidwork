@@ -72,6 +72,8 @@ You: Show me third-party apps on RSCR70FW19K
 You: List files in /sdcard/Download
 
 
+touch ~/deepagents/libs/deepagents/deepagents/android_tools/diagnostics.py
+
 cd ~/deepagents
 source venv/bin/activate
 env -u http_proxy python -c "
