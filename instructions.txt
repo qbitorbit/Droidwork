@@ -94,3 +94,8 @@ from deepagents.android_tools.diagnostics import capture_bugreport
 result = capture_bugreport.invoke({})
 print(result)
 "
+
+env -u http_proxy python -c "
+from deepagents.android_tools import take_screenshot, get_logcat, capture_bugreport
+print('OK - 26 tools total')
+"
