@@ -99,3 +99,54 @@ env -u http_proxy python -c "
 from deepagents.android_tools import take_screenshot, get_logcat, capture_bugreport
 print('OK - 26 tools total')
 "
+
+touch ~/deepagents/libs/deepagents/deepagents/android_tools/ui_automation.py
+
+# Test 1: tap
+env -u http_proxy python -c "
+from deepagents.android_tools.ui_automation import tap
+result = tap.invoke({'x': 500, 'y': 500})
+print(result)
+"
+
+# Test 2: long_press
+env -u http_proxy python -c "
+from deepagents.android_tools.ui_automation import long_press
+result = long_press.invoke({'x': 500, 'y': 500, 'duration_ms': 500})
+print(result)
+"
+
+# Test 3: swipe (swipe down)
+env -u http_proxy python -c "
+from deepagents.android_tools.ui_automation import swipe
+result = swipe.invoke({'start_x': 500, 'start_y': 300, 'end_x': 500, 'end_y': 1000})
+print(result)
+"
+
+# Test 4: input_text (tap a text field first!)
+env -u http_proxy python -c "
+from deepagents.android_tools.ui_automation import input_text
+result = input_text.invoke({'text': 'Hello World'})
+print(result)
+"
+
+# Test 5: press_key (press Home)
+env -u http_proxy python -c "
+from deepagents.android_tools.ui_automation import press_key
+result = press_key.invoke({'keycode': 'KEYCODE_HOME'})
+print(result)
+"
+
+# Test 6: get_ui_hierarchy
+env -u http_proxy python -c "
+from deepagents.android_tools.ui_automation import get_ui_hierarchy
+result = get_ui_hierarchy.invoke({})
+print(result[:500])
+"
+
+# Test 7: drag
+env -u http_proxy python -c "
+from deepagents.android_tools.ui_automation import drag
+result = drag.invoke({'start_x': 500, 'start_y': 500, 'end_x': 500, 'end_y': 800})
+print(result)
+"
