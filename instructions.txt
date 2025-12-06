@@ -155,3 +155,16 @@ env -u http_proxy python -c "
 from deepagents.android_tools import tap, swipe, input_text, press_key, get_ui_hierarchy
 print('OK - 33 tools total')
 "
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python android_agent.py
+```
+
+**Try these commands:**
+```
+You: List my devices
+You: Take a screenshot
+You: Swipe down on the screen to open notifications
+You: Press the home button
+You: Get the UI hierarchy
