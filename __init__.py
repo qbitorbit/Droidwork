@@ -39,18 +39,28 @@ from .diagnostics import (
     get_logcat,
     capture_bugreport,
 )
+from .ui_automation import (
+    UIAutomation,
+    tap,
+    long_press,
+    swipe,
+    drag,
+    input_text,
+    press_key,
+    get_ui_hierarchy,
+)
 
 __all__ = [
     # ADB Client
     'ADBClient',
-    # Device Manager
+    # Device Manager (5)
     'DeviceManager',
     'list_android_devices',
     'get_device_info',
     'get_device_battery_info',
     'reboot_device',
     'get_device_screen_info',
-    # App Control
+    # App Control (7)
     'AppController',
     'list_installed_packages',
     'get_app_info',
@@ -59,7 +69,7 @@ __all__ = [
     'start_app',
     'stop_app',
     'clear_app_data',
-    # File Operations
+    # File Operations (11)
     'FileManager',
     'list_files',
     'pull_file',
@@ -72,9 +82,18 @@ __all__ = [
     'file_stats',
     'list_app_databases',
     'pull_app_database',
-    # Diagnostics
+    # Diagnostics (3)
     'DiagnosticsManager',
     'take_screenshot',
     'get_logcat',
     'capture_bugreport',
+    # UI Automation (7)
+    'UIAutomation',
+    'tap',
+    'long_press',
+    'swipe',
+    'drag',
+    'input_text',
+    'press_key',
+    'get_ui_hierarchy',
 ]
