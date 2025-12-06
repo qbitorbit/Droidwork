@@ -70,6 +70,64 @@ def take_screenshot(output_path: Optional[str] = None, device_serial: Optional[s
             "path": output_path,
             "device": device_serial
         })
+
+    @tool
+def get_logcat(
+    lines: int = 100,
+    filter_tag: Optional[str] = None,
+    filter_level: Optional[str] = None,
+    device_serial: Optional[str] = None
+) -> str:
+    """Get system logs from the Android device.
+    
+    Args:
+        lines: Number of recent log lines to retrieve (default: 100)
+        filter_tag: Filter by tag (e.g., "ActivityManager", "System")
+        filter_level: Filter by level: V(verbose), D(debug), I(info), W(warn), E(error), F(fatal)
+        device_serial: Device serial (optional, uses first device if not specified)
+    
+    Returns:
+        JSON string with success status and log content
+    """
+    # Get device serial
+    if not device_serial:
+        devices = _manager.adb.get_devices()
+        if not devices:
+            return json.dumps({"success": False, "error": "No devices connected"})
+        device_serial = devices[0].get('serial') if isinstance(devices[0], dict) else devices[0]
+    
+    try:
+        adb = ADBClient(device_serial)
+        
+        # Build logcat command
+        cmd = ["shell", "logcat", "-d", "-t", str(lines)]
+        
+        # Add filter if specified
+        if filter_tag and filter_level:
+            cmd.append(f"{filter_tag}:{filter_level}")
+            cmd.append("*:S")  # Silence others
+        elif filter_tag:
+            cmd.append(f"{filter_tag}:V")
+            cmd.append("*:S")
+        elif filter_level:
+            cmd.append(f"*:{filter_level}")
+        
+        success, stdout, stderr = adb._run_adb(cmd, timeout=30)
+        
+        if not success:
+            return json.dumps({"success": False, "error": f"Failed to get logs: {stderr}"})
+        
+        log_lines = stdout.strip().split('\n') if stdout.strip() else []
+        
+        return json.dumps({
+            "success": True,
+            "lines_returned": len(log_lines),
+            "logs": stdout,
+            "device": device_serial
+        })
+        
+    except Exception as e:
+        return json.dumps({"success": False, "error": str(e)})
         
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
