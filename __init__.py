@@ -33,6 +33,12 @@ from .file_ops import (
     list_app_databases,
     pull_app_database,
 )
+from .diagnostics import (
+    DiagnosticsManager,
+    take_screenshot,
+    get_logcat,
+    capture_bugreport,
+)
 
 __all__ = [
     # ADB Client
@@ -66,4 +72,9 @@ __all__ = [
     'file_stats',
     'list_app_databases',
     'pull_app_database',
+    # Diagnostics
+    'DiagnosticsManager',
+    'take_screenshot',
+    'get_logcat',
+    'capture_bugreport',
 ]
