@@ -168,3 +168,8 @@ You: Take a screenshot
 You: Swipe down on the screen to open notifications
 You: Press the home button
 You: Get the UI hierarchy
+
+touch ~/.deepagents/agent/skills/webapp-testing/scripts/with_server.py
+touch ~/.deepagents/agent/skills/webapp-testing/examples/console_logging.py
+touch ~/.deepagents/agent/skills/webapp-testing/examples/element_discovery.py
+touch ~/.deepagents/agent/skills/webapp-testing/examples/static_html_automation.py
