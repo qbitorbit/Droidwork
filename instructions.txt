@@ -173,3 +173,12 @@ touch ~/.deepagents/agent/skills/webapp-testing/scripts/with_server.py
 touch ~/.deepagents/agent/skills/webapp-testing/examples/console_logging.py
 touch ~/.deepagents/agent/skills/webapp-testing/examples/element_discovery.py
 touch ~/.deepagents/agent/skills/webapp-testing/examples/static_html_automation.py
+
+
+
+# Create VLA skill directory alongside your existing webapp-testing skill
+mkdir -p ~/.deepagents/agent/skills/vla-android/scripts
+mkdir -p ~/.deepagents/agent/skills/vla-android/resources/prompts
+mkdir -p ~/.deepagents/agent/skills/vla-android/resources/workflows
+mkdir -p ~/.deepagents/agent/skills/vla-android/resources/bypass
+mkdir -p ~/.deepagents/agent/skills/vla-android/examples
