@@ -206,4 +206,6 @@ ls -R ~/.deepagents/agent/skills/vla-android/
 # resources/workflows/
 
 
-cat ~/.deepagents/agent/skills/vla-android/SKILL.md
+touch ~/.deepagents/agent/skills/vla-android/SKILL.md
+
+open ~/.deepagents/agent/skills/vla-android/SKILL.md
