@@ -182,3 +182,25 @@ mkdir -p ~/.deepagents/agent/skills/vla-android/resources/prompts
 mkdir -p ~/.deepagents/agent/skills/vla-android/resources/workflows
 mkdir -p ~/.deepagents/agent/skills/vla-android/resources/bypass
 mkdir -p ~/.deepagents/agent/skills/vla-android/examples
+
+Then verify it was created:
+
+# Verify structure
+ls -la ~/.deepagents/agent/skills/
+
+# Should show:
+# webapp-testing/
+# vla-android/
+
+
+And check the vla-android folder:
+
+ls -R ~/.deepagents/agent/skills/vla-android/
+
+# Should show:
+# examples/
+# resources/
+# scripts/
+# resources/bypass/
+# resources/prompts/
+# resources/workflows/
