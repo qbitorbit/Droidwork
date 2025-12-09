@@ -1,4 +1,3 @@
-cat > ~/.deepagents/agent/skills/vla-android/SKILL.md << 'EOF'
 ---
 name: vla-android
 description: Vision-Language-Action automation for Android devices. Uses Qwen VL for visual perception and Qwen Coder for planning to perform human-like device control. Handles complex flows like Play Store installs, account registration, and OTP retrieval. Use when tasks require visual understanding of the screen rather than coordinate-based automation.
@@ -82,4 +81,3 @@ This skill uses the android_tools module from the deepagents library:
 - `take_screenshot()` for screen capture
 - `tap()`, `swipe()`, `input_text()` for actions
 - `get_ui_hierarchy()` as fallback to vision
-EOF
