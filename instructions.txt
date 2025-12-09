@@ -204,3 +204,6 @@ ls -R ~/.deepagents/agent/skills/vla-android/
 # resources/bypass/
 # resources/prompts/
 # resources/workflows/
+
+
+cat ~/.deepagents/agent/skills/vla-android/SKILL.md
