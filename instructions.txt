@@ -235,6 +235,8 @@ env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_per
 
 touch ~/.deepagents/agent/skills/vla-android/scripts/__init__.py
 
+touch ~/.deepagents/agent/skills/vla-android/scripts/executor.py
+
 ls -la ~/.deepagents/agent/skills/vla-android/scripts/
 ```
 
