@@ -213,3 +213,7 @@ open ~/.deepagents/agent/skills/vla-android/SKILL.md
 touch ~/.deepagents/agent/skills/vla-android/scripts/config.py
 
 cat ~/.deepagents/agent/skills/vla-android/scripts/config.py
+
+touch ~/.deepagents/agent/skills/vla-android/scripts/perception.py
+
+ls -la ~/.deepagents/agent/skills/vla-android/scripts/
