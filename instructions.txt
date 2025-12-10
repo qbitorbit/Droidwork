@@ -217,3 +217,14 @@ cat ~/.deepagents/agent/skills/vla-android/scripts/config.py
 touch ~/.deepagents/agent/skills/vla-android/scripts/perception.py
 
 ls -la ~/.deepagents/agent/skills/vla-android/scripts/
+
+touch ~/.deepagents/agent/skills/vla-android/scripts/test_perception.py
+
+ls -la ~/.deepagents/agent/skills/vla-android/scripts/
+```
+
+Should show:
+```
+config.py
+perception.py
+test_perception.py
