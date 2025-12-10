@@ -209,3 +209,7 @@ ls -R ~/.deepagents/agent/skills/vla-android/
 touch ~/.deepagents/agent/skills/vla-android/SKILL.md
 
 open ~/.deepagents/agent/skills/vla-android/SKILL.md
+
+touch ~/.deepagents/agent/skills/vla-android/scripts/config.py
+
+cat ~/.deepagents/agent/skills/vla-android/scripts/config.py
