@@ -232,3 +232,5 @@ test_perception.py
 cd ~/deepagents
 source venv/bin/activate
 env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_perception.py
+
+touch ~/.deepagents/agent/skills/vla-android/scripts/__init__.py
