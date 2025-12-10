@@ -234,3 +234,14 @@ source venv/bin/activate
 env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_perception.py
 
 touch ~/.deepagents/agent/skills/vla-android/scripts/__init__.py
+
+ls -la ~/.deepagents/agent/skills/vla-android/scripts/
+```
+
+Should show:
+```
+__init__.py
+config.py
+executor.py
+perception.py
+test_perception.py
