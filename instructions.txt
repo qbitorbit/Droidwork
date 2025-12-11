@@ -268,3 +268,5 @@ planner.py
 test_perception.py
 
 touch ~/.deepagents/agent/skills/vla-android/scripts/vla_loop.py
+
+touch ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py
