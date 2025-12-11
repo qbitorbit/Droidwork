@@ -271,4 +271,13 @@ touch ~/.deepagents/agent/skills/vla-android/scripts/vla_loop.py
 
 touch ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py
 
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py --test simple
+
+env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py --test search
+
+env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py --test interactive
+
 env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py --test custom --task "Open Chrome and go to google.com"
