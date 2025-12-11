@@ -266,3 +266,5 @@ executor.py
 perception.py
 planner.py
 test_perception.py
+
+touch ~/.deepagents/agent/skills/vla-android/scripts/vla_loop.py
