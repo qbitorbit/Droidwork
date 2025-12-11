@@ -281,3 +281,5 @@ env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_vla
 env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py --test interactive
 
 env -u http_proxy python ~/.deepagents/agent/skills/vla-android/scripts/test_vla_agent.py --test custom --task "Open Chrome and go to google.com"
+
+curl -s http://10.202.1.3:8000/v1/models -H "Authorization: Bearer dummy-key" | python -m json.tool
