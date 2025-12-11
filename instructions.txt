@@ -247,3 +247,22 @@ config.py
 executor.py
 perception.py
 test_perception.py
+
+
+
+touch ~/.deepagents/agent/skills/vla-android/scripts/planner.py
+
+
+Verify:
+```bash
+ls -la ~/.deepagents/agent/skills/vla-android/scripts/
+```
+
+Should show:
+````
+__init__.py
+config.py
+executor.py
+perception.py
+planner.py
+test_perception.py
