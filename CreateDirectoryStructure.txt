@@ -59,3 +59,5 @@ cd ~/deepagents && source venv/bin/activate && env -u http_proxy python ~/.deepa
 
 grep -n "def create_agent_with_config" ~/deepagents/libs/deepagents-cli/deepagents_cli/agent.py
 grep -n "tools" ~/deepagents/libs/deepagents-cli/deepagents_cli/agent.py | head -20
+
+grep -rn "create_agent_with_config" ~/deepagents/libs/deepagents-cli/deepagents_cli/ | grep -v ".pyc"
