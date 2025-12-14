@@ -48,3 +48,5 @@ echo "=== Checking .deepagents directory ===" && \
 ls -la ~/.deepagents/ 2>/dev/null
 
 curl -s https://raw.githubusercontent.com/langchain-ai/deepagents/master/libs/deepagents-cli/deepagents_cli/skills/__init__.py
+
+curl -s https://raw.githubusercontent.com/langchain-ai/deepagents/master/libs/deepagents-cli/deepagents_cli/skills/middleware.py
