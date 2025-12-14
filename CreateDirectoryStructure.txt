@@ -1,0 +1,12 @@
+# Create all directories
+mkdir -p ~/.deepagents/agent/skills/confluence/mcp_server
+mkdir -p ~/.deepagents/agent/skills/confluence/scripts
+mkdir -p ~/.deepagents/agent/skills/confluence/resources/prompts
+
+# Create empty __init__.py files
+touch ~/.deepagents/agent/skills/confluence/mcp_server/__init__.py
+touch ~/.deepagents/agent/skills/confluence/scripts/__init__.py
+
+# Verify
+echo "=== Directory structure created ===" 
+find ~/.deepagents/agent/skills/confluence/ -type f -o -type d | sort
