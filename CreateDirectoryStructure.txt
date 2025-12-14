@@ -10,3 +10,8 @@ touch ~/.deepagents/agent/skills/confluence/scripts/__init__.py
 # Verify
 echo "=== Directory structure created ===" 
 find ~/.deepagents/agent/skills/confluence/ -type f -o -type d | sort
+
+
+cd ~/deepagents
+source venv/bin/activate
+pip install -r ~/.deepagents/agent/skills/confluence/mcp_server/requirements.txt
