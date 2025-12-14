@@ -56,3 +56,6 @@ cd ~/deepagents && source venv/bin/activate && python -c "from mcp import Client
 cd ~/deepagents && source venv/bin/activate && python ~/.deepagents/agent/skills/confluence/mcp_client.py
 
 cd ~/deepagents && source venv/bin/activate && env -u http_proxy python ~/.deepagents/agent/skills/confluence/mcp_client.py
+
+grep -n "def create_agent_with_config" ~/deepagents/libs/deepagents-cli/deepagents_cli/agent.py
+grep -n "tools" ~/deepagents/libs/deepagents-cli/deepagents_cli/agent.py | head -20
