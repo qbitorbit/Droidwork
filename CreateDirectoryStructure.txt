@@ -15,3 +15,17 @@ find ~/.deepagents/agent/skills/confluence/ -type f -o -type d | sort
 cd ~/deepagents
 source venv/bin/activate
 pip install -r ~/.deepagents/agent/skills/confluence/mcp_server/requirements.txt
+
+
+
+cat > ~/.deepagents/agent/skills/confluence/mcp_server/__init__.py << 'EOF'
+"""
+Confluence MCP Server Package
+"""
+
+from .confluence_client import ConfluenceClient, PageContent, SearchResult
+
+__all__ = ["ConfluenceClient", "PageContent", "SearchResult"]
+EOF
+
+echo "✅ __init__.py updated"
