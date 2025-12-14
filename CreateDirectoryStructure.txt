@@ -29,3 +29,8 @@ __all__ = ["ConfluenceClient", "PageContent", "SearchResult"]
 EOF
 
 echo "✅ __init__.py updated"
+
+
+cd ~/deepagents
+source venv/bin/activate
+python ~/.deepagents/agent/skills/confluence/mcp_server/test_import.py
