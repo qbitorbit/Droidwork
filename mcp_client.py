@@ -148,7 +148,7 @@ class ConfluenceMCPClientSync:
 # LangChain Tool Factory
 # =============================================================================
 
-from langchain.tools import BaseTool, StructuredTool
+from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import BaseModel, Field, create_model
 from typing import Type
 
@@ -294,7 +294,4 @@ if __name__ == "__main__":
     _test_sync()
 EOF
 
-echo "✅ mcp_client.py created"
-echo ""
-echo "File location: ~/.deepagents/agent/skills/confluence/mcp_client.py"
-wc -l ~/.deepagents/agent/skills/confluence/mcp_client.py
+echo "✅ mcp_client.py updated (fixed import)"
