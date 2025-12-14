@@ -153,10 +153,64 @@ from pydantic import BaseModel, Field, create_model
 from typing import Type
 
 
+def _extract_params_schema(input_schema: dict) -> dict:
+    """
+    Extract the actual parameters from MCP input schema.
+    
+    MCP tools using Pydantic models have a nested structure like:
+    {
+        "properties": {
+            "params": {
+                "properties": { actual fields },
+                "required": [ actual required fields ]
+            }
+        },
+        "required": ["params"]
+    }
+    
+    We need to extract the inner params schema.
+    """
+    properties = input_schema.get("properties", {})
+    
+    # Check if this is a nested params structure
+    if "params" in properties and len(properties) == 1:
+        params_schema = properties["params"]
+        if isinstance(params_schema, dict):
+            # Check for $ref or direct properties
+            if "properties" in params_schema:
+                return {
+                    "properties": params_schema.get("properties", {}),
+                    "required": params_schema.get("required", [])
+                }
+            elif "$defs" in input_schema:
+                # Handle $ref case - look up in $defs
+                ref = params_schema.get("$ref", "")
+                if ref.startswith("#/$defs/"):
+                    def_name = ref.split("/")[-1]
+                    if def_name in input_schema["$defs"]:
+                        def_schema = input_schema["$defs"][def_name]
+                        return {
+                            "properties": def_schema.get("properties", {}),
+                            "required": def_schema.get("required", [])
+                        }
+    
+    # Not nested, return as-is
+    return {
+        "properties": properties,
+        "required": input_schema.get("required", [])
+    }
+
+
 def _create_input_model(tool_name: str, input_schema: dict) -> Type[BaseModel]:
     """Create a Pydantic model from JSON schema."""
-    properties = input_schema.get("properties", {})
-    required = input_schema.get("required", [])
+    # Extract actual params from potentially nested schema
+    extracted = _extract_params_schema(input_schema)
+    properties = extracted.get("properties", {})
+    required = extracted.get("required", [])
+    
+    if not properties:
+        # No parameters - create empty model
+        return create_model(f"{tool_name}Input")
     
     fields = {}
     for name, prop in properties.items():
@@ -176,10 +230,16 @@ def _create_input_model(tool_name: str, input_schema: dict) -> Type[BaseModel]:
             field_type = dict
         
         # Handle optional fields
-        if name not in required:
+        is_required = name in required
+        if not is_required:
             field_type = Optional[field_type]
         
-        default = ... if name in required else prop.get("default", None)
+        # Get default value
+        if is_required:
+            default = ...
+        else:
+            default = prop.get("default", None)
+        
         description = prop.get("description", "")
         
         fields[name] = (field_type, Field(default=default, description=description))
@@ -201,7 +261,8 @@ def _create_langchain_tool(
     
     def tool_func(**kwargs) -> str:
         """Execute the MCP tool."""
-        return mcp_client.call_tool(tool_name, kwargs)
+        # Wrap kwargs in params for MCP server
+        return mcp_client.call_tool(tool_name, {"params": kwargs})
     
     return StructuredTool.from_function(
         func=tool_func,
@@ -254,8 +315,8 @@ async def _test_async():
     for tool in tools:
         print(f"   - {tool['name']}: {tool['description'][:50]}...")
     
-    print("\n2. Calling confluence_list_spaces...")
-    result = await client.call_tool("confluence_list_spaces", {"limit": 5})
+    print("\n2. Calling confluence_list_spaces directly via MCP...")
+    result = await client.call_tool("confluence_list_spaces", {"params": {"limit": 5}})
     print(f"   Result:\n{result[:500]}...")
     
     print("\n✅ Async MCP client working!")
@@ -279,6 +340,12 @@ def _test_sync():
         result = spaces_tool.invoke({"limit": 5})
         print(f"   Result:\n{result[:500]}...")
     
+    print("\n3. Testing confluence_search tool...")
+    search_tool = next((t for t in tools if t.name == "confluence_search"), None)
+    if search_tool:
+        result = search_tool.invoke({"query": "test", "limit": 3})
+        print(f"   Result:\n{result[:500]}...")
+    
     print("\n✅ LangChain MCP tools working!")
 
 
@@ -294,4 +361,4 @@ if __name__ == "__main__":
     _test_sync()
 EOF
 
-echo "✅ mcp_client.py updated (fixed import)"
+echo "✅ mcp_client.py updated (fixed params wrapping)"
