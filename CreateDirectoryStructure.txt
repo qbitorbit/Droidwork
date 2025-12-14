@@ -69,3 +69,5 @@ cp ~/deepagents/libs/deepagents-cli/deepagents_cli/main.py ~/deepagents/libs/dee
 
 # Show the exact line numbers we need to modify
 grep -n "tools = \[http_request, fetch_url\]" ~/deepagents/libs/deepagents-cli/deepagents_cli/main.py
+
+cd ~/deepagents && source venv/bin/activate && env -u http_proxy deepagents
