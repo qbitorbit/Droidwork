@@ -61,3 +61,5 @@ grep -n "def create_agent_with_config" ~/deepagents/libs/deepagents-cli/deepagen
 grep -n "tools" ~/deepagents/libs/deepagents-cli/deepagents_cli/agent.py | head -20
 
 grep -rn "create_agent_with_config" ~/deepagents/libs/deepagents-cli/deepagents_cli/ | grep -v ".pyc"
+
+sed -n '280,320p' ~/deepagents/libs/deepagents-cli/deepagents_cli/main.py
