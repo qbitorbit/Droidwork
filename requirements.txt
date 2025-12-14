@@ -1,0 +1,28 @@
+cat > ~/.deepagents/agent/skills/confluence/mcp_server/requirements.txt << 'EOF'
+# Confluence MCP Server Dependencies
+
+# MCP Framework
+mcp>=1.0.0
+
+# Confluence API
+atlassian-python-api>=3.41.0
+
+# HTML Parsing (for extracting content/images)
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# HTTP Client
+httpx>=0.27.0
+
+# Data Validation
+pydantic>=2.0.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# Image Processing (for base64 encoding)
+Pillow>=10.0.0
+EOF
+
+echo "✅ requirements.txt created"
+cat ~/.deepagents/agent/skills/confluence/mcp_server/requirements.txt
