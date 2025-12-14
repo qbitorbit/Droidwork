@@ -54,3 +54,5 @@ curl -s https://raw.githubusercontent.com/langchain-ai/deepagents/master/libs/de
 cd ~/deepagents && source venv/bin/activate && python -c "from mcp import ClientSession; print('MCP Client available')" 2>/dev/null || echo "Need to check MCP client API"
 
 cd ~/deepagents && source venv/bin/activate && python ~/.deepagents/agent/skills/confluence/mcp_client.py
+
+cd ~/deepagents && source venv/bin/activate && env -u http_proxy python ~/.deepagents/agent/skills/confluence/mcp_client.py
