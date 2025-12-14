@@ -34,3 +34,15 @@ echo "✅ __init__.py updated"
 cd ~/deepagents
 source venv/bin/activate
 python ~/.deepagents/agent/skills/confluence/mcp_server/test_import.py
+
+
+Check deepagents-cli MCP Configuration
+
+echo "=== Looking for deepagents config files ===" && \
+find ~/deepagents -name "*.yaml" -o -name "*.yml" -o -name "*.json" -o -name "config*.py" 2>/dev/null | head -20 && \
+echo "" && \
+echo "=== Checking common config locations ===" && \
+ls -la ~/deepagents/libs/deepagents-cli/deepagents_cli/ 2>/dev/null | head -10 && \
+echo "" && \
+echo "=== Checking .deepagents directory ===" && \
+ls -la ~/.deepagents/ 2>/dev/null
