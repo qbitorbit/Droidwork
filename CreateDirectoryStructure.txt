@@ -87,3 +87,14 @@ env -u http_proxy python ~/.deepagents/agent/skills/confluence/mcp_client.py
 To Rollback (if issues)
 
 cp ~/.deepagents/agent/skills/confluence/mcp_client.py.backup ~/.deepagents/agent/skills/confluence/mcp_client.py
+
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python -c "
+from mcp_client import ConfluenceMCPClientSync
+client = ConfluenceMCPClientSync()
+result = client.call_tool('confluence_get_page_images', {'params': {'page_id': '187036437'}})
+print('Type:', type(result))
+print('Result:', result[:1000])
+"
