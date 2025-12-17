@@ -78,3 +78,12 @@ cp mcp_server/confluence_client.py mcp_server/confluence_client.py.backup
 
 # ~/deepagents/.env
 CONFLUENCE_MULTI_MODEL=false   # Set to true to enable routing
+
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python ~/.deepagents/agent/skills/confluence/mcp_client.py
+
+To Rollback (if issues)
+
+cp ~/.deepagents/agent/skills/confluence/mcp_client.py.backup ~/.deepagents/agent/skills/confluence/mcp_client.py
