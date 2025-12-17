@@ -71,3 +71,10 @@ cp ~/deepagents/libs/deepagents-cli/deepagents_cli/main.py ~/deepagents/libs/dee
 grep -n "tools = \[http_request, fetch_url\]" ~/deepagents/libs/deepagents-cli/deepagents_cli/main.py
 
 cd ~/deepagents && source venv/bin/activate && env -u http_proxy deepagents
+
+cd ~/.deepagents/agent/skills/confluence
+cp mcp_client.py mcp_client.py.backup
+cp mcp_server/confluence_client.py mcp_server/confluence_client.py.backup
+
+# ~/deepagents/.env
+CONFLUENCE_MULTI_MODEL=false   # Set to true to enable routing
