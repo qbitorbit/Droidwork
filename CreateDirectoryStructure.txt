@@ -130,3 +130,10 @@ cat ~/deepagents/.env | grep CONFLUENCE
 
 
 dotenv_path = Path("~/deepagents/.env").expanduser()
+
+cat ~/deepagents/.env | grep -E "CONFLUENCE_(BASE_URL|USERNAME|PASSWORD)"
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python ~/.deepagents/agent/skills/confluence/mcp_server/test_connection.py
+
