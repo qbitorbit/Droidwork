@@ -99,3 +99,13 @@ result = client.call_tool('confluence_get_page_images', {'params': {'page_id': '
 print('Type:', type(result))
 print('Result:', result[:2000])
 "
+
+
+
+env -u http_proxy python -c "
+import sys
+sys.path.insert(0, '/Users/quantum/.deepagents/agent/skills/confluence')
+from mcp_client import get_confluence_mcp_tools
+tools = get_confluence_mcp_tools()
+print(f'Loaded {len(tools)} tools')
+"
