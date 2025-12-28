@@ -108,4 +108,25 @@ sys.path.insert(0, '/Users/quantum/.deepagents/agent/skills/confluence')
 from mcp_client import get_confluence_mcp_tools
 tools = get_confluence_mcp_tools()
 print(f'Loaded {len(tools)} tools')
+
+
+cd ~/deepagents
+source venv/bin/activate
+env -u http_proxy python -c "
+from dotenv import load_dotenv
+import os
+
+# Load from deepagents .env
+load_dotenv('/Users/quantum/deepagents/.env')
+
+print('CONFLUENCE_BASE_URL:', os.getenv('CONFLUENCE_BASE_URL'))
+print('CONFLUENCE_USERNAME:', os.getenv('CONFLUENCE_USERNAME'))
+print('CONFLUENCE_PASSWORD:', 'SET' if os.getenv('CONFLUENCE_PASSWORD') else 'NOT SET')
 "
+"
+
+ls -la ~/deepagents/.env
+cat ~/deepagents/.env | grep CONFLUENCE
+
+
+dotenv_path = Path("~/deepagents/.env").expanduser()
